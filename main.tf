@@ -1,14 +1,18 @@
-# Download the latest Ghost Image
-resource "docker_image" "image_id" {
-  name = "${var.image_name}"
+provider "aws" {
+  region = "${var.aws_region}"
 }
 
-# Start the Container
-resource "docker_container" "container_id" {
-  name  = "${var.container_name}"
-  image = "${docker_image.image_id.latest}"
-  ports {
-    internal = "2368"
-    external = "${var.ext_port}"
-  }
+resource "random_id" "tf_bucket_id" {
+  byte_length = 2
+}
+
+resource "aws_s3_bucket" "tf_code" {
+    bucket        = "${var.project_name}-${random_id.tf_bucket_id.dec}"
+    acl           = "private"
+
+    force_destroy =  true
+
+    tags {
+      Name = "tf_bucket"
+    }
 }

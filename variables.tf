@@ -1,15 +1,7 @@
-#Define variables
-variable "image_name" {
-  description = "Image for container."
-  default     = "ghost:latest"
+variable "aws_region" {
+  default = "us-east-1"
 }
 
-variable "container_name" {
-  description = "Name of the container."
-  default     = "blog"
-}
-
-variable "ext_port" {
-  description = "External port for container."
-  default     = "80"
+variable "project_name" {
+  default = "la-terraform"
 }
