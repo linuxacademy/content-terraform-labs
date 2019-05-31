@@ -10,14 +10,19 @@ data "aws_ami" "server_ami" {
   }
 }
 
-# Need to access the public key file referenced in var.public_key_path 
-
-resource "aws_key_pair" "tf_auth" {
+resource "aws_key_pair" "tf-auth" {
   key_name   = "${var.key_name}"
-  public_key = 
+  public_key = "${file(var.public_key_path)}"
 }
 
-# Template file goes here
+data "template_file" "user-init" {
+  count    = 2
+  template = "${file("${path.module}/userdata.tpl")}"
+
+  vars {
+    firewall_subnets = "${element(var.subnet_ips, count.index)}"
+  }
+}
 
 resource "aws_instance" "tf_server" {
   count         = "${var.instance_count}"
