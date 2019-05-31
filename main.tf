@@ -2,17 +2,30 @@ provider "aws" {
   region = "${var.aws_region}"
 }
 
-resource "random_id" "tf_bucket_id" {
-  byte_length = 2
+# Deploy Storage Resource
+module "storage" {
+  source       = "./storage"
+  project_name = "${var.project_name}"
 }
 
-resource "aws_s3_bucket" "tf_code" {
-    bucket        = "${var.project_name}-${random_id.tf_bucket_id.dec}"
-    acl           = "private"
+# Deploy Networking Resources
 
-    force_destroy =  true
+module "networking" {
+  source       = "./networking"
+  vpc_cidr     = "${var.vpc_cidr}"
+  public_cidrs = "${var.public_cidrs}"
+  accessip     = "${var.accessip}"
+}
 
-    tags {
-      Name = "tf_bucket"
-    }
+# Deploy Compute Resources
+
+module "compute" {
+  source          = "./compute"
+  instance_count  = "${var.instance_count}"
+  key_name        = "${var.key_name}"
+  public_key_path = "${var.public_key_path}"
+  instance_type   = "${var.server_instance_type}"
+  subnets         = "${module.networking.public_subnets}"
+  security_group  = "${module.networking.public_sg}"
+  subnet_ips      = "${module.networking.subnet_ips}"
 }
