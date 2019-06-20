@@ -1,15 +1,8 @@
-#Define variables
-variable "image_name" {
-  description = "Image for container."
-  default     = "ghost:latest"
+variable "vpc_cidr" {
+  default = "10.123.0.0/16"
 }
 
-variable "container_name" {
-  description = "Name of the container."
-  default     = "blog"
+variable "accessip" {
+  default = "0.0.0.0/0"
 }
 
-variable "ext_port" {
-  description = "External port for container."
-  default     = "80"
-}
