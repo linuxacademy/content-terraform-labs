@@ -33,14 +33,6 @@ resource "aws_route_table" "tf_public_rt" {
   }
 }
 
-resource "aws_default_route_table" "tf_private_rt" {
-  default_route_table_id = "{aws_vpc.tf_vpc.default_route_table.id}"
-
-  tags {
-    Name = "tf_private"
-  }
-}
-
 resource "aws_subnet" "tf_public_subnet" {
   count                   = 2
   vpc_id                  = "${aws_vpc.tf_vpc.id}"
